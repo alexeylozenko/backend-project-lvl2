@@ -29,3 +29,21 @@ describe('stylish', () => {
 	})
 
 });
+
+describe('plain', () => {
+
+	test('flat json', () => {
+		const filename1 = getFixturesPath('flat-tree1.json');
+		const filename2 = getFixturesPath('flat-tree2.json');
+		const result = readFile('flat-plain.txt');
+		expect(genDiff(filename1, filename2, 'plain')).toBe(result);
+	});
+
+	test('nested json', () => {
+		const filename1 = getFixturesPath('nested-tree1.json');
+		const filename2 = getFixturesPath('nested-tree2.json');
+		const result = readFile('nested-plain.txt');
+		expect(genDiff(filename1, filename2, 'plain')).toBe(result);
+	});
+
+});
