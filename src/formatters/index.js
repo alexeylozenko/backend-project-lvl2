@@ -5,7 +5,10 @@ const formate = (data, formater) => {
 	if (formater === 'plain') {
 		return plainFormate(data);
 	}
-	return stylishFormate(data);
+	if (formater === 'stylish') {
+		return stylishFormate(data);
+	}
+	return JSON.stringify(data);
 };
 
 export default formate;
