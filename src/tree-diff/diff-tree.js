@@ -11,10 +11,10 @@ const getType = (node) => node.type;
 const getChildren = (tree) => tree.children;
 
 export {
-	makeNode,
-	makeTree,
-	getValue,
-	getKey,
-	getType,
-	getChildren
+  makeNode,
+  makeTree,
+  getValue,
+  getKey,
+  getType,
+  getChildren,
 };
