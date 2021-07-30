@@ -21,4 +21,11 @@ describe('stylish', () => {
 		expect(genDiff(filename1, filename2)).toBe(result);
 	});
 
+	test('nested json', () => {
+		const filename1 = getFixturesPath('nested-tree1.json');
+		const filename2 = getFixturesPath('nested-tree2.json');
+		const result = readFile('nested-stylish.txt');
+		expect(genDiff(filename1, filename2)).toBe(result);
+	})
+
 });
