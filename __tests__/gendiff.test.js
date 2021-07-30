@@ -28,6 +28,20 @@ describe('stylish', () => {
 		expect(genDiff(filename1, filename2)).toBe(result);
 	})
 
+	test('flat yaml', () => {
+		const filename1 = getFixturesPath('flat-tree1.yaml');
+		const filename2 = getFixturesPath('flat-tree2.yml');
+		const result = readFile('flat-stylish.txt');
+		expect(genDiff(filename1, filename2)).toBe(result);
+	});
+
+	test('nested yaml', () => {
+		const filename1 = getFixturesPath('nested-tree1.yaml');
+		const filename2 = getFixturesPath('nested-tree2.yml');
+		const result = readFile('nested-stylish.txt');
+		expect(genDiff(filename1, filename2)).toBe(result);
+	})
+
 });
 
 describe('plain', () => {
@@ -45,5 +59,19 @@ describe('plain', () => {
 		const result = readFile('nested-plain.txt');
 		expect(genDiff(filename1, filename2, 'plain')).toBe(result);
 	});
+
+	test('flat yaml', () => {
+		const filename1 = getFixturesPath('flat-tree1.yaml');
+		const filename2 = getFixturesPath('flat-tree2.yml');
+		const result = readFile('flat-plain.txt');
+		expect(genDiff(filename1, filename2, 'plain')).toBe(result);
+	});
+
+	test('nested yaml', () => {
+		const filename1 = getFixturesPath('nested-tree1.yaml');
+		const filename2 = getFixturesPath('nested-tree2.yml');
+		const result = readFile('nested-plain.txt');
+		expect(genDiff(filename1, filename2, 'plain')).toBe(result);
+	})
 
 });
