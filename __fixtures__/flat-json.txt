@@ -1,0 +1,1 @@
+{"key":"","children":[{"key":"follow","value":false,"type":"removed"},{"key":"host","value":"hexlet.io","type":"unchanged"},{"key":"proxy","value":"123.234.53.22","type":"removed"},{"key":"timeout","value":[50,20],"type":"changed"},{"key":"verbose","value":true,"type":"added"}],"type":"tree"}
