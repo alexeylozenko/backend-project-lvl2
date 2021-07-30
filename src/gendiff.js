@@ -3,6 +3,7 @@ import path from 'path';
 import _ from 'lodash';
 import { makeNode, makeTree } from './tree-diff/diff-tree.js';
 import formate from './formatters/index.js';
+import parse from './parsers/index.js';
 
 const compareTrees = (leftTree, rightTree) => {
 	const iter = (leftData, rightData) => {
@@ -35,8 +36,8 @@ const compareTrees = (leftTree, rightTree) => {
 const genDiff = (filename1, filename2, formatter = 'stylish') => {
 	const leftData = readFileSync(path.resolve(filename1), 'utf-8');
 	const rightData = readFileSync(path.resolve(filename2), 'utf-8');
-	const leftTree = JSON.parse(leftData);
-	const rightTree = JSON.parse(rightData);
+	const leftTree = parse(leftData, filename1);
+	const rightTree = parse(rightData, filename2);
 	const difftree = compareTrees(leftTree, rightTree);
 	return formate(difftree, formatter);
 };
