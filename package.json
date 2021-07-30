@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/alexeylozenko/backend-project-lvl2#readme",
   "dependencies": {
-    "commander": "github:tj/commander.js",
+    "commander": "git+https://github.com/tj/commander.js.git",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
