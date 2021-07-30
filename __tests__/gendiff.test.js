@@ -75,3 +75,35 @@ describe('plain', () => {
 	})
 
 });
+
+describe('json', () => {
+	
+	test('flat json', () => {
+		const filename1 = getFixturesPath('flat-tree1.json');
+		const filename2 = getFixturesPath('flat-tree2.json');
+		const result = readFile('flat-json.txt');
+		expect(genDiff(filename1, filename2, 'json')).toBe(result);
+	});
+
+	test('nested json', () => {
+		const filename1 = getFixturesPath('nested-tree1.json');
+		const filename2 = getFixturesPath('nested-tree2.json');
+		const result = readFile('nested-json.txt');
+		expect(genDiff(filename1, filename2, 'json')).toBe(result);
+	});
+
+	test('flat yaml', () => {
+		const filename1 = getFixturesPath('flat-tree1.yaml');
+		const filename2 = getFixturesPath('flat-tree2.yml');
+		const result = readFile('flat-json.txt');
+		expect(genDiff(filename1, filename2, 'json')).toBe(result);
+	});
+
+	test('nested yaml', () => {
+		const filename1 = getFixturesPath('nested-tree1.yaml');
+		const filename2 = getFixturesPath('nested-tree2.yml');
+		const result = readFile('nested-json.txt');
+		expect(genDiff(filename1, filename2, 'json')).toBe(result);
+	});
+
+});
