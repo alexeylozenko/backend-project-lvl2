@@ -1,59 +1,54 @@
 import _ from 'lodash';
 import {
-  getValue,
   getKey,
   getType,
   getChildren,
 } from '../../tree-diff/diff-tree.js';
 
-const stringify = (data, depth) => {
-  const replacer = '  ';
-  if (typeof data !== 'object') {
-    return `${data}`;
+const stringify = (data, indent, inline = false) => {
+  const arrToString = (arr) => arr.map((el) => stringify(el, indent, true)).join(', ');
+  const objectToString = (obj) => {
+    const lines = Object.entries(obj)
+      .map(([key, value]) => {
+        if (typeof value === 'object') {
+          return `${' '.repeat(indent + 4)}${key}: ${stringify(value, indent + 4)}`
+        }
+        return `${' '.repeat(indent + 4)}${key}: ${value}`
+      });
+
+    return ['{', ...lines, `${' '.repeat(indent)}}`].join('\n');
+  };
+  
+  if (Array.isArray(data)) {
+    return `[${arrToString(data)}]`;
   }
-  const currentIndent = replacer.repeat(depth);
-  const bracketIndent = replacer.repeat(depth - 2);
-  const lines = Object.entries(data)
-    .map(([key, value]) => `${currentIndent}${key}: ${stringify(value, depth + 2)}`);
-  return ['{', ...lines, `${bracketIndent}}`].join('\n');
+  if (_.isPlainObject(data)) {
+    return objectToString(data, indent);
+  }
+  return data;
 };
 
-const stylishFormate = (tree) => {
-  const replacer = '  ';
-  const iter = (data, depth) => {
-    if (!_.isPlainObject(data)) {
-      return `${data}`;
+const stylishFormate = (diffTree, indent = 0) => {
+  const lines = diffTree.map((node) => {
+    switch(node.type) {
+      case 'added': 
+        return `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`;
+      case 'removed':
+        return `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`;
+      case 'changed':
+        return `${' '.repeat(indent + 2)}  ${node.key}: ${stylishFormate(node.children, indent + 4)}`;
+      case 'unchanged':
+        return `${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.oldValue, indent + 4)}`;
+      case 'updated':
+        return [
+          `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`,
+          `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`,
+        ];
+      default:
+        throw new Error('invalid state data');
     }
-    if (getType(data) !== 'tree') {
-      return `${stringify(data, depth)}`;
-    }
-
-    const currentIndent = replacer.repeat(depth);
-    const indentWithMark = replacer.repeat(depth - 1);
-    const bracketIndent = replacer.repeat(depth - 2);
-    const children = getChildren(data);
-    const lines = children.map((child) => {
-      const key = getKey(child);
-      if (getType(child) === 'tree') {
-        return `${currentIndent}${key}: ${iter(child, depth + 2)}`;
-      }
-      if (getType(child) === 'changed') {
-        const [oldValue, newValue] = getValue(child);
-        return `${indentWithMark}- ${key}: ${iter(oldValue, depth + 2)}\n${indentWithMark}+ ${key}: ${iter(newValue, depth + 2)}`;
-      }
-      const value = getValue(child);
-      if (getType(child) === 'removed') {
-        return `${indentWithMark}- ${key}: ${iter(value, depth + 2)}`;
-      }
-      if (getType(child) === 'added') {
-        return `${indentWithMark}+ ${key}: ${iter(value, depth + 2)}`;
-      }
-      return `${currentIndent}${key}: ${iter(value, depth + 2)}`;
-    });
-
-    return ['{', ...lines, `${bracketIndent}}`].join('\n');
-  };
-  return iter(tree, 2);
+  });
+  return ['{', ..._.flatten(lines), `${' '.repeat(indent)}}`].join('\n');
 };
 
 export default stylishFormate;
