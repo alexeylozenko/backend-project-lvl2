@@ -1,37 +1,29 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 import _ from 'lodash';
-import { makeNode, makeTree } from './tree-diff/diff-tree.js';
+import { makeNode } from './tree-diff/diff-tree.js';
 import formate from './formatters/index.js';
 import parse from './parsers/index.js';
 
-const compareTrees = (leftTree, rightTree) => {
-  const iter = (leftData, rightData) => {
-    const leftKey = Object.keys(leftData);
-    const rightKey = Object.keys(rightData);
-    const keys = _.sortedUniq([...leftKey, ...rightKey].sort());
-    const children = keys.map((key) => {
-      const leftValue = leftData[key];
-      const rightValue = rightData[key];
-
-      if (!_.has(leftData, key)) {
-        return makeNode(key, rightValue, 'added');
+const compareTrees = (before, after) => (
+  _.union(Object.keys(before), Object.keys(after))
+    .sort()
+    .map((key) => {
+      if (!_.has(after, key)) {
+        return makeNode('removed', key, before[key]);
       }
-      if (!_.has(rightData, key)) {
-        return makeNode(key, leftValue, 'removed');
+      if (!_.has(before, key)) {
+        return makeNode('added', key, null, after[key]);
       }
-      if (JSON.stringify(leftValue) === JSON.stringify(rightValue)) {
-        return makeNode(key, leftValue, 'unchanged');
+      if (_.isEqual(before[key], after[key])) {
+        return makeNode('unchanged', key, before[key], after[key]);
       }
-      if (typeof leftValue === 'object' && typeof rightValue === 'object') {
-        return makeTree(key, iter(leftValue, rightValue));
+      if (_.isPlainObject(before[key]) && _.isPlainObject(after[key])) {
+        return makeNode('changed', key, before[key], after[key], compareTrees(before[key], after[key]))
       }
-      return makeNode(key, [leftValue, rightValue], 'changed');
-    });
-    return children;
-  };
-  return makeTree('', iter(leftTree, rightTree));
-};
+      return makeNode('updated', key, before[key], after[key]);
+    })
+);
 
 const genDiff = (filename1, filename2, formatter = 'stylish') => {
   const leftData = readFileSync(path.resolve(filename1), 'utf-8');
