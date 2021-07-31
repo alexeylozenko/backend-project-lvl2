@@ -1,7 +1,4 @@
 import _ from 'lodash';
-import {
-  getChildren, getKey, getType, getValue,
-} from '../../tree-diff/diff-tree.js';
 
 const formateValue = (data) => {
   if (_.isPlainObject(data)) {
@@ -10,30 +7,26 @@ const formateValue = (data) => {
   if (typeof data === 'string') {
     return `'${data}'`;
   }
-  return `${data}`;
+  return data;
 };
 
-const plainFormate = (tree) => {
-  const iter = (data, pathKey) => {
-    if (getType(data) === 'changed') {
-      const [oldValue, newValue] = getValue(data);
-      return `Property '${pathKey}' was updated. From ${formateValue(oldValue)} to ${formateValue(newValue)}`;
+const plainFormate = (tree, nestedKeys = []) => tree
+  .map((node) => {
+    const str = `Property '${[...nestedKeys, node.key].join('.')}'`;
+    switch(node.type) {
+      case 'changed':
+        return plainFormate(node.children, [...nestedKeys, node.key]);
+      case 'removed':
+        return `${str} was removed`;
+      case 'added':
+        return `${str} was added with value: ${formateValue(node.newValue)}`;
+      case 'updated':
+        return `${str} was updated. From ${formateValue(node.oldValue)} to ${formateValue(node.newValue)}`;
+      case 'unchanged':
+        return null;
+      default:
+        throw new Error('invalid state data');
     }
-    if (getType(data) === 'removed') {
-      return `Property '${pathKey}' was removed`;
-    }
-    if (getType(data) === 'added') {
-      const value = getValue(data);
-      return `Property '${pathKey}' was added with value: ${formateValue(value)}`;
-    }
-    const children = getChildren(data).filter(({ type }) => type !== 'unchanged');
-    return children.map((child) => {
-      const key = getKey(child);
-      const currentKey = (pathKey) ? `${pathKey}.${key}` : `${key}`;
-      return `${iter(child, currentKey)}`;
-    }).join('\n');
-  };
-  return iter(tree);
-};
+  }).filter((line) => line !== null).join('\n');
 
 export default plainFormate;
