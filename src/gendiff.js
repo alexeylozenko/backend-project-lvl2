@@ -5,8 +5,8 @@ import { makeNode } from './tree-diff/diff-tree.js';
 import formate from './formatters/index.js';
 import parse from './parsers/index.js';
 
-const compareTrees = (before, after) => (
-  _.union(Object.keys(before), Object.keys(after))
+const compareTrees = (before, after) => {
+  return _.union([...Object.keys(before)], [...Object.keys(after)])
     .sort()
     .map((key) => {
       if (!_.has(after, key)) {
@@ -22,8 +22,8 @@ const compareTrees = (before, after) => (
         return makeNode('changed', key, before[key], after[key], compareTrees(before[key], after[key]));
       }
       return makeNode('updated', key, before[key], after[key]);
-    })
-);
+    });
+};
 
 const genDiff = (filename1, filename2, formatter = 'stylish') => {
   const leftData = readFileSync(path.resolve(filename1), 'utf-8');
