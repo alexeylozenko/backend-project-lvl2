@@ -24,7 +24,7 @@ jobs:
         node-version: [14.x]
     steps:
       - uses: actions/checkout@v2
-
+        run: which git
       - name: Hexlet project check
         uses: hexlet/project-action@release
         with:
