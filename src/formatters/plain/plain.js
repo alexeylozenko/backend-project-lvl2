@@ -13,7 +13,7 @@ const formateValue = (data) => {
 const plainFormate = (tree, nestedKeys = []) => tree
   .map((node) => {
     const str = `Property '${[...nestedKeys, node.key].join('.')}'`;
-    switch(node.type) {
+    switch (node.type) {
       case 'changed':
         return plainFormate(node.children, [...nestedKeys, node.key]);
       case 'removed':

@@ -1,6 +1,6 @@
-const makeNode = (type, key, oldValue, newValue = null, children = null) => {
-  return { type, key, oldValue, newValue, children };
-};
+const makeNode = (type, key, oldValue, newValue = null, children = null) => ({
+  type, key, oldValue, newValue, children,
+});
 
 const getKey = (node) => node.key;
 

@@ -1,24 +1,19 @@
 import _ from 'lodash';
-import {
-  getKey,
-  getType,
-  getChildren,
-} from '../../tree-diff/diff-tree.js';
 
-const stringify = (data, indent, inline = false) => {
+const stringify = (data, indent) => {
   const arrToString = (arr) => arr.map((el) => stringify(el, indent, true)).join(', ');
   const objectToString = (obj) => {
     const lines = Object.entries(obj)
       .map(([key, value]) => {
         if (typeof value === 'object') {
-          return `${' '.repeat(indent + 4)}${key}: ${stringify(value, indent + 4)}`
+          return `${' '.repeat(indent + 4)}${key}: ${stringify(value, indent + 4)}`;
         }
-        return `${' '.repeat(indent + 4)}${key}: ${value}`
+        return `${' '.repeat(indent + 4)}${key}: ${value}`;
       });
 
     return ['{', ...lines, `${' '.repeat(indent)}}`].join('\n');
   };
-  
+
   if (Array.isArray(data)) {
     return `[${arrToString(data)}]`;
   }
@@ -30,8 +25,8 @@ const stringify = (data, indent, inline = false) => {
 
 const stylishFormate = (diffTree, indent = 0) => {
   const lines = diffTree.map((node) => {
-    switch(node.type) {
-      case 'added': 
+    switch (node.type) {
+      case 'added':
         return `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`;
       case 'removed':
         return `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`;

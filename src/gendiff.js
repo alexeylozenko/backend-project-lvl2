@@ -19,7 +19,7 @@ const compareTrees = (before, after) => (
         return makeNode('unchanged', key, before[key], after[key]);
       }
       if (_.isPlainObject(before[key]) && _.isPlainObject(after[key])) {
-        return makeNode('changed', key, before[key], after[key], compareTrees(before[key], after[key]))
+        return makeNode('changed', key, before[key], after[key], compareTrees(before[key], after[key]));
       }
       return makeNode('updated', key, before[key], after[key]);
     })
