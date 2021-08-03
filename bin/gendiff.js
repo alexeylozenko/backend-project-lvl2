@@ -11,7 +11,7 @@ program
   .description('Compares two configuration files and shows a difference')
   .arguments('<filepath1> <filepath2>')
   .helpOption('-h, --help', 'output usage information')
-  .option('-f, --format [type]', 'output format')
+  .option('-f, --format [stylish, plain, json]', 'output format', 'stylish')
   .action((filepath1, filepath2, formater) => {
     const { format } = formater;
     console.log(genDiff(filepath1, filepath2, format));
