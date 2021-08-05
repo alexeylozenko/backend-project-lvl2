@@ -6,7 +6,7 @@ import genDiff from '../src/gendiff';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const getFixturesPath = (filename) => path.join(__dirname, '..', '__tests__/__fixtures__', filename);
+const getFixturesPath = (filename) => path.join(__dirname, '..', '/__fixtures__', filename);
 const readFile = (filename) => readFileSync(getFixturesPath(filename), 'utf-8');
 
 const flatjson1 = getFixturesPath('flat-tree1.json');
