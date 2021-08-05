@@ -13,7 +13,6 @@ program
   .helpOption('-h, --help', 'output usage information')
   .option('-f, --format [stylish, plain, json]', 'output format', 'stylish')
   .action((filepath1, filepath2, formater) => {
-    const { format } = formater;
-    console.log(genDiff(filepath1, filepath2, format));
+    console.log(genDiff(filepath1, filepath2, formater.format));
   })
   .parse();
