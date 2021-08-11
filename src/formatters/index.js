@@ -1,11 +1,11 @@
 import plainFormate from './plain.js';
 import stylishFormate from './stylish.js';
 
-const format = (data, formater) => {
-  if (formater === 'plain') {
+const format = (data, formatName) => {
+  if (formatName === 'plain') {
     return plainFormate(data);
   }
-  if (formater === 'stylish') {
+  if (formatName === 'stylish') {
     return stylishFormate(data);
   }
   return JSON.stringify(data);
