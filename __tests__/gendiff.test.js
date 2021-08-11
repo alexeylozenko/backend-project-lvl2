@@ -10,7 +10,6 @@ const getFixturesPath = (filename) => path.join(__dirname, '..', '__fixtures__',
 const readFile = (filename) => readFileSync(filename, 'utf-8');
 
 const nestedjson1 = getFixturesPath('nested-tree1.json');
-const nestedyaml2 = getFixturesPath('nested-tree2.yaml');
 const nestedyml2 = getFixturesPath('nested-tree2.yml');
 
 const stylishResult = getFixturesPath('nested-stylish.txt');
@@ -20,7 +19,7 @@ const jsonResult = getFixturesPath('nested-json.txt');
 test.each([
   {
     first: nestedjson1,
-    second: nestedyaml2,
+    second: nestedyml2,
     formatter: 'stylish',
     expected: stylishResult,
   },
@@ -32,7 +31,7 @@ test.each([
   },
   {
     first: nestedjson1,
-    second: nestedyaml2,
+    second: nestedyml2,
     formatter: 'json',
     expected: jsonResult,
   }
