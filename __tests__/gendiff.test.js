@@ -34,10 +34,10 @@ test.each([
     second: nestedyml2,
     formatter: 'json',
     expected: jsonResult,
-  }
+  },
 ])('$formatter', ({
   first, second, formatter, expected,
 }) => {
-	const expectedValue = readFile(expected);
+  const expectedValue = readFile(expected);
   expect(genDiff(first, second, formatter)).toBe(expectedValue);
 });
