@@ -19,9 +19,9 @@ const plainFormate = (tree, nestedKeys = []) => tree
       case 'removed':
         return `${str} was removed`;
       case 'added':
-        return `${str} was added with value: ${formateValue(node.newValue)}`;
+        return `${str} was added with value: ${formateValue(node.value2)}`;
       case 'updated':
-        return `${str} was updated. From ${formateValue(node.oldValue)} to ${formateValue(node.newValue)}`;
+        return `${str} was updated. From ${formateValue(node.value1)} to ${formateValue(node.value2)}`;
       case 'unchanged':
         return null;
       default:

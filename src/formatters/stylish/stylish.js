@@ -27,17 +27,17 @@ const stylishFormate = (diffTree, indent = 0) => {
   const lines = diffTree.map((node) => {
     switch (node.type) {
       case 'added':
-        return `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`;
+        return `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.value2, indent + 4)}`;
       case 'removed':
-        return `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`;
+        return `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.value1, indent + 4)}`;
       case 'changed':
         return `${' '.repeat(indent + 2)}  ${node.key}: ${stylishFormate(node.children, indent + 4)}`;
       case 'unchanged':
-        return `${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.oldValue, indent + 4)}`;
+        return `${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.value1, indent + 4)}`;
       case 'updated':
         return [
-          `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`,
-          `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`,
+          `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.value1, indent + 4)}`,
+          `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.value2, indent + 4)}`,
         ];
       default:
         throw new Error('invalid state data');
