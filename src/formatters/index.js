@@ -1,5 +1,5 @@
-import plainFormate from './plain/plain.js';
-import stylishFormate from './stylish/stylish.js';
+import plainFormate from './plain.js';
+import stylishFormate from './stylish.js';
 
 const format = (data, formater) => {
   if (formater === 'plain') {
