@@ -2,29 +2,25 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import _ from 'lodash';
 import format from './formatters/index.js';
-import parse from './parsers/index.js';
-
-const makeNode = (type, key, value1, value2 = null, children = null) => ({
-  type, key, value1, value2, children,
-});
+import parse from './parsers.js';
 
 const buildTree = (data1, data2) => {
   const keys = _.union(Object.keys(data1), Object.keys(data2));
   return _.sortBy(keys, (el) => el)
     .map((key) => {
       if (!_.has(data2, key)) {
-        return makeNode('removed', key, data1[key]);
+        return { type: 'removed', key: key, value1: data1[key], value2: null, children: null};
       }
       if (!_.has(data1, key)) {
-        return makeNode('added', key, null, data2[key]);
+        return { type: 'added', key: key, value1: null, value2: data2[key], children: null };
       }
       if (_.isEqual(data1[key], data2[key])) {
-        return makeNode('unchanged', key, data1[key], data2[key]);
+        return { type: 'unchanged', key: key, value1: data1[key], value2: data2[key], children: null };
       }
       if (_.isPlainObject(data1[key]) && _.isPlainObject(data2[key])) {
-        return makeNode('changed', key, data1[key], data2[key], buildTree(data1[key], data2[key]));
+        return { type:'changed', key: key, value1: data1[key], value2: data2[key], children: buildTree(data1[key], data2[key]) };
       }
-      return makeNode('updated', key, data1[key], data2[key]);
+      return { type: 'updated', key: key, value1: data1[key], value2: data2[key], children: null };
     });
 };
 
