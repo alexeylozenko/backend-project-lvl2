@@ -1,11 +1,11 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 import _ from 'lodash';
-import formate from './formatters/index.js';
+import format from './formatters/index.js';
 import parse from './parsers/index.js';
 
-const makeNode = (type, key, oldValue, newValue = null, children = null) => ({
-  type, key, oldValue, newValue, children,
+const makeNode = (type, key, value1, value2 = null, children = null) => ({
+  type, key, value1, value2, children,
 });
 
 const buildTree = (data1, data2) => {
@@ -41,7 +41,7 @@ const genDiff = (filename1, filename2, formatter = 'stylish') => {
   const data1 = parse(fileContent1, getParseFormat(filename1));
   const data2 = parse(fileContent2, getParseFormat(filename2));
   const difftree = buildTree(data1, data2);
-  return formate(difftree, formatter);
+  return format(difftree, formatter);
 };
 
 export default genDiff;
