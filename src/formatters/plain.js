@@ -7,7 +7,7 @@ const formateValue = (data) => {
   if (typeof data === 'string') {
     return `'${data}'`;
   }
-  return data;
+  return `${data}`;
 };
 
 const plainFormate = (tree, nestedKeys = []) => tree
