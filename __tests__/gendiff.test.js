@@ -9,35 +9,9 @@ const __dirname = path.dirname(__filename);
 const getFixturesPath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => readFileSync(filename, 'utf-8');
 
-const nestedjson1 = getFixturesPath('nested-tree1.json');
-const nestedyml2 = getFixturesPath('nested-tree2.yml');
-
-const stylishResult = getFixturesPath('nested-stylish.txt');
-const plainResult = getFixturesPath('nested-plain.txt');
-const jsonResult = getFixturesPath('nested-json.txt');
-
-test.each([
-  {
-    first: nestedjson1,
-    second: nestedyml2,
-    formatter: 'stylish',
-    expected: stylishResult,
-  },
-  {
-    first: nestedjson1,
-    second: nestedyml2,
-    formatter: 'plain',
-    expected: plainResult,
-  },
-  {
-    first: nestedjson1,
-    second: nestedyml2,
-    formatter: 'json',
-    expected: jsonResult,
-  },
-])('$formatter', ({
-  first, second, formatter, expected,
-}) => {
-  const expectedValue = readFile(expected);
-  expect(genDiff(first, second, formatter)).toBe(expectedValue);
+test.each(['stylish', 'plain', 'json'])('%s', (formatter) => {
+  const filepath1 = getFixturesPath('nested-tree1.json');
+  const filepath2 = getFixturesPath('nested-tree2.yml');
+  const expectedValue = readFile(getFixturesPath(`nested-${formatter}.txt`));
+  expect(genDiff(filepath1, filepath2, formatter)).toBe(expectedValue);
 });
