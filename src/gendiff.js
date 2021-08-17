@@ -18,34 +18,31 @@ const buildTree = (data1, data2) => {
           type: 'added', key, value1: null, value2: data2[key], children: null,
         };
       }
-      if (_.isEqual(data1[key], data2[key])) {
-        return {
-          type: 'unchanged', key, value1: data1[key], value2: data2[key], children: null,
-        };
-      }
       if (_.isPlainObject(data1[key]) && _.isPlainObject(data2[key])) {
         return {
           type: 'changed', key, value1: data1[key], value2: data2[key], children: buildTree(data1[key], data2[key]),
         };
       }
+      if (data1[key] !== data2[key]) {
+        return {
+          type: 'updated', key, value1: data1[key], value2: data2[key], children: null,
+        };
+      }
       return {
-        type: 'updated', key, value1: data1[key], value2: data2[key], children: null,
+        type: 'unchanged', key, value1: data1[key], value2: data2[key], children: null,
       };
     });
 };
 
 const buildPath = (filename) => path.resolve(process.cwd(), filename);
 
-const getParseFormat = (filename) => {
-  const extName = path.extname(filename);
-  return (extName === '.yml' || extName === '.yaml') ? 'yaml' : 'json';
-};
+const extractFormat = (filename) => path.extname(filename);
 
 const genDiff = (filename1, filename2, formatter = 'stylish') => {
   const fileContent1 = readFileSync(buildPath(filename1), 'utf-8');
   const fileContent2 = readFileSync(buildPath(filename2), 'utf-8');
-  const data1 = parse(fileContent1, getParseFormat(filename1));
-  const data2 = parse(fileContent2, getParseFormat(filename2));
+  const data1 = parse(fileContent1, extractFormat(filename1));
+  const data2 = parse(fileContent2, extractFormat(filename2));
   const difftree = buildTree(data1, data2);
   return format(difftree, formatter);
 };
