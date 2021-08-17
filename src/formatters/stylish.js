@@ -23,7 +23,7 @@ const stringify = (data, indent) => {
   return data;
 };
 
-const stylishFormate = (diffTree, indent = 0) => {
+const formatStylish = (diffTree, indent = 0) => {
   const lines = diffTree.map((node) => {
     switch (node.type) {
       case 'added':
@@ -31,7 +31,7 @@ const stylishFormate = (diffTree, indent = 0) => {
       case 'removed':
         return `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.value1, indent + 4)}`;
       case 'changed':
-        return `${' '.repeat(indent + 2)}  ${node.key}: ${stylishFormate(node.children, indent + 4)}`;
+        return `${' '.repeat(indent + 2)}  ${node.key}: ${formatStylish(node.children, indent + 4)}`;
       case 'unchanged':
         return `${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.value1, indent + 4)}`;
       case 'updated':
@@ -46,4 +46,4 @@ const stylishFormate = (diffTree, indent = 0) => {
   return ['{', ..._.flatten(lines), `${' '.repeat(indent)}}`].join('\n');
 };
 
-export default stylishFormate;
+export default formatStylish;

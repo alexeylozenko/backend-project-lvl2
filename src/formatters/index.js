@@ -1,12 +1,12 @@
-import plainFormate from './plain.js';
-import stylishFormate from './stylish.js';
+import formatPlain from './plain.js';
+import formatStylish from './stylish.js';
 
 const format = (data, formatName) => {
   if (formatName === 'plain') {
-    return plainFormate(data);
+    return formatPlain(data);
   }
   if (formatName === 'stylish') {
-    return stylishFormate(data);
+    return formatStylish(data);
   }
   return JSON.stringify(data);
 };

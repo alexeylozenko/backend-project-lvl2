@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const formateValue = (data) => {
+const stringify = (data) => {
   if (_.isPlainObject(data)) {
     return '[complex value]';
   }
@@ -10,23 +10,23 @@ const formateValue = (data) => {
   return `${data}`;
 };
 
-const plainFormate = (tree, nestedKeys = []) => tree
+const formatPlain = (tree, nestedKeys = []) => tree
   .map((node) => {
-    const str = `Property '${[...nestedKeys, node.key].join('.')}'`;
+    const property = `Property '${[...nestedKeys, node.key].join('.')}'`;
     switch (node.type) {
       case 'changed':
-        return plainFormate(node.children, [...nestedKeys, node.key]);
+        return formatPlain(node.children, [...nestedKeys, node.key]);
       case 'removed':
-        return `${str} was removed`;
+        return `${property} was removed`;
       case 'added':
-        return `${str} was added with value: ${formateValue(node.value2)}`;
+        return `${property} was added with value: ${stringify(node.value2)}`;
       case 'updated':
-        return `${str} was updated. From ${formateValue(node.value1)} to ${formateValue(node.value2)}`;
+        return `${property} was updated. From ${stringify(node.value1)} to ${stringify(node.value2)}`;
       case 'unchanged':
         return null;
       default:
         throw new Error('invalid state data');
     }
-  }).filter((line) => line !== null).join('\n');
+  }).filter(Boolean).join('\n');
 
-export default plainFormate;
+export default formatPlain;
