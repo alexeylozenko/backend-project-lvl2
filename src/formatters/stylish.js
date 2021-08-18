@@ -23,27 +23,30 @@ const stringify = (data, indent) => {
   return data;
 };
 
-const formatStylish = (diffTree, indent = 0) => {
-  const lines = diffTree.map((node) => {
-    switch (node.type) {
-      case 'added':
-        return `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.value2, indent + 4)}`;
-      case 'removed':
-        return `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.value1, indent + 4)}`;
-      case 'changed':
-        return `${' '.repeat(indent + 2)}  ${node.key}: ${formatStylish(node.children, indent + 4)}`;
-      case 'unchanged':
-        return `${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.value1, indent + 4)}`;
-      case 'updated':
-        return [
-          `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.value1, indent + 4)}`,
-          `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.value2, indent + 4)}`,
-        ];
-      default:
-        throw new Error('invalid state data');
-    }
-  });
-  return ['{', ..._.flatten(lines), `${' '.repeat(indent)}}`].join('\n');
+const formatStylish = (diffTree) => {
+  const format = (tree, depth) => {
+    const lines = tree.map((node) => {
+      switch (node.type) {
+        case 'added':
+          return `${' '.repeat(depth + 2)}+ ${node.key}: ${stringify(node.value2, depth + 4)}`;
+        case 'removed':
+          return `${' '.repeat(depth + 2)}- ${node.key}: ${stringify(node.value1, depth + 4)}`;
+        case 'changed':
+          return `${' '.repeat(depth + 2)}  ${node.key}: ${format(node.children, depth + 4)}`;
+        case 'unchanged':
+          return `${' '.repeat(depth + 2)}  ${node.key}: ${stringify(node.value1, depth + 4)}`;
+        case 'updated':
+          return [
+            `${' '.repeat(depth + 2)}- ${node.key}: ${stringify(node.value1, depth + 4)}`,
+            `${' '.repeat(depth + 2)}+ ${node.key}: ${stringify(node.value2, depth + 4)}`,
+          ];
+        default:
+          throw new Error('invalid state data');
+      }
+    });
+    return ['{', ..._.flatten(lines), `${' '.repeat(depth)}}`].join('\n');
+  };
+  return format(diffTree, 0);
 };
 
 export default formatStylish;
