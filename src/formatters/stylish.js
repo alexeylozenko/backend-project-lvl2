@@ -1,24 +1,24 @@
 import _ from 'lodash';
 
-const stringify = (data, indent) => {
-  const arrToString = (arr) => arr.map((el) => stringify(el, indent, true)).join(', ');
+const stringify = (data, depth) => {
+  const arrToString = (arr) => arr.map((el) => stringify(el, depth)).join(', ');
   const objectToString = (obj) => {
     const lines = Object.entries(obj)
       .map(([key, value]) => {
         if (typeof value === 'object') {
-          return `${' '.repeat(indent + 4)}${key}: ${stringify(value, indent + 4)}`;
+          return `${' '.repeat(depth + 4)}${key}: ${stringify(value, depth + 4)}`;
         }
-        return `${' '.repeat(indent + 4)}${key}: ${value}`;
+        return `${' '.repeat(depth + 4)}${key}: ${value}`;
       });
 
-    return ['{', ...lines, `${' '.repeat(indent)}}`].join('\n');
+    return ['{', ...lines, `${' '.repeat(depth)}}`].join('\n');
   };
 
   if (Array.isArray(data)) {
     return `[${arrToString(data)}]`;
   }
   if (_.isPlainObject(data)) {
-    return objectToString(data, indent);
+    return objectToString(data, depth);
   }
   return data;
 };
