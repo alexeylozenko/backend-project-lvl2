@@ -1,50 +1,57 @@
 import _ from 'lodash';
 
+const getIndent = (depth) => '    '.repeat(depth);
+
 const stringify = (data, depth) => {
+  const currentIndent = getIndent(depth);
+  const newIndent = getIndent(depth + 1);
   const arrToString = (arr) => arr.map((el) => stringify(el, depth)).join(', ');
   const objectToString = (obj) => {
     const lines = Object.entries(obj)
       .map(([key, value]) => {
         if (typeof value === 'object') {
-          return `${' '.repeat(depth + 4)}${key}: ${stringify(value, depth + 4)}`;
+          return `${newIndent}${key}: ${stringify(value, depth + 1)}`;
         }
-        return `${' '.repeat(depth + 4)}${key}: ${value}`;
+        return `${newIndent}${key}: ${value}`;
       });
 
-    return ['{', ...lines, `${' '.repeat(depth)}}`].join('\n');
+    return ['{', ...lines, `${currentIndent}}`].join('\n');
   };
 
   if (Array.isArray(data)) {
     return `[${arrToString(data)}]`;
   }
   if (_.isPlainObject(data)) {
-    return objectToString(data, depth);
+    return `${objectToString(data, depth)}`;
   }
-  return data;
+  return `${data}`;
 };
 
 const formatStylish = (diffTree) => {
   const format = (tree, depth) => {
+    const currentIndent = getIndent(depth);
+    const newIndent = getIndent(depth + 1);
+    const indentWithMark = newIndent.slice(2);
     const lines = tree.map((node) => {
       switch (node.type) {
         case 'added':
-          return `${' '.repeat(depth + 2)}+ ${node.key}: ${stringify(node.value2, depth + 4)}`;
+          return `${indentWithMark}+ ${node.key}: ${stringify(node.value2, depth + 1)}`;
         case 'removed':
-          return `${' '.repeat(depth + 2)}- ${node.key}: ${stringify(node.value1, depth + 4)}`;
+          return `${indentWithMark}- ${node.key}: ${stringify(node.value1, depth + 1)}`;
         case 'changed':
-          return `${' '.repeat(depth + 2)}  ${node.key}: ${format(node.children, depth + 4)}`;
+          return `${newIndent}${node.key}: ${format(node.children, depth + 1)}`;
         case 'unchanged':
-          return `${' '.repeat(depth + 2)}  ${node.key}: ${stringify(node.value1, depth + 4)}`;
+          return `${newIndent}${node.key}: ${stringify(node.value1, depth + 1)}`;
         case 'updated':
           return [
-            `${' '.repeat(depth + 2)}- ${node.key}: ${stringify(node.value1, depth + 4)}`,
-            `${' '.repeat(depth + 2)}+ ${node.key}: ${stringify(node.value2, depth + 4)}`,
+            `${indentWithMark}- ${node.key}: ${stringify(node.value1, depth + 1)}`,
+            `${indentWithMark}+ ${node.key}: ${stringify(node.value2, depth + 1)}`,
           ];
         default:
           throw new Error('invalid state data');
       }
     });
-    return ['{', ..._.flatten(lines), `${' '.repeat(depth)}}`].join('\n');
+    return ['{', ..._.flatten(lines), `${currentIndent}}`].join('\n');
   };
   return format(diffTree, 0);
 };
