@@ -6,7 +6,7 @@ import buildTree from './builder.js';
 
 const buildPath = (filename) => path.resolve(process.cwd(), filename);
 
-const extractFormat = (filename) => path.extname(filename);
+const extractFormat = (filename) => path.extname(filename).slice(1);
 
 const genDiff = (filename1, filename2, formatter = 'stylish') => {
   const fileContent1 = readFileSync(buildPath(filename1), 'utf-8');
