@@ -1,51 +1,41 @@
 import _ from 'lodash';
 
-const getIndent = (depth) => '    '.repeat(depth);
+const indent = (depth, mark = '  ') => ( depth !== 0) 
+	? '  '.repeat(depth * 2 - 1) + mark 
+	: '';
 
 const stringify = (data, depth) => {
-  const currentIndent = getIndent(depth);
-  const newIndent = getIndent(depth + 1);
-  const arrToString = (arr) => arr.map((el) => stringify(el, depth)).join(', ');
+  const currentIndent = indent(depth);
+  const newIndent = indent(depth + 1);
   const objectToString = (obj) => {
     const lines = Object.entries(obj)
-      .map(([key, value]) => {
-        if (typeof value === 'object') {
-          return `${newIndent}${key}: ${stringify(value, depth + 1)}`;
-        }
-        return `${newIndent}${key}: ${value}`;
-      });
+      .map(([key, value]) => `${newIndent}${key}: ${stringify(value, depth + 1)}`);
 
     return ['{', ...lines, `${currentIndent}}`].join('\n');
   };
-
-  if (Array.isArray(data)) {
-    return `[${arrToString(data)}]`;
-  }
   if (_.isPlainObject(data)) {
     return `${objectToString(data, depth)}`;
   }
-  return `${data}`;
+  return String(data);
 };
 
 const formatStylish = (diffTree) => {
   const format = (tree, depth) => {
-    const currentIndent = getIndent(depth);
-    const newIndent = getIndent(depth + 1);
-    const indentWithMark = newIndent.slice(2);
+    const currentIndent = indent(depth);
     const lines = tree.map((node) => {
       switch (node.type) {
         case 'added':
-          return `${indentWithMark}+ ${node.key}: ${stringify(node.value2, depth + 1)}`;
+          return `${indent(depth + 1, '+ ')}${node.key}: ${stringify(node.value2, depth + 1)}`;
         case 'removed':
-          return `${indentWithMark}- ${node.key}: ${stringify(node.value1, depth + 1)}`;
+          return `${indent(depth + 1, '- ')}${node.key}: ${stringify(node.value1, depth + 1)}`;
         case 'changed':
-          return `${newIndent}${node.key}: ${format(node.children, depth + 1)}`;
+          return `${indent(depth + 1)}${node.key}: ${format(node.children, depth + 1)}`;
         case 'unchanged':
-          return `${newIndent}${node.key}: ${stringify(node.value1, depth + 1)}`;
+          return `${indent(depth + 1)}${node.key}: ${stringify(node.value1, depth + 1)}`;
         case 'updated':
           return [
-            `${indentWithMark}- ${node.key}: ${stringify(node.value1, depth + 1)}`,
-            `${indentWithMark}+ ${node.key}: ${stringify(node.value2, depth + 1)}`,
+            `${indent(depth + 1, '- ')}${node.key}: ${stringify(node.value1, depth + 1)}`,
+            `${indent(depth + 1, '+ ')}${node.key}: ${stringify(node.value2, depth + 1)}`,
           ];
         default:
           throw new Error('invalid state data');
