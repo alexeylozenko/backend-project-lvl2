@@ -6,7 +6,7 @@ const buildTree = (data1, data2) => {
     .map((key) => {
       if (!_.has(data2, key)) {
         return {
-          type: 'removed', key, value1: data1[key], 
+          type: 'removed', key, value1: data1[key],
         };
       }
       if (!_.has(data1, key)) {

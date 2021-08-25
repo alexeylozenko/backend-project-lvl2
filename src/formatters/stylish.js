@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-const indent = (depth, mark = '  ') => ( depth !== 0) 
-	? '  '.repeat(depth * 2 - 1) + mark 
-	: '';
+const indent = (depth, mark = '  ') => ((depth !== 0)
+  ? '  '.repeat(depth * 2 - 1) + mark
+  : '');
 
 const stringify = (data, depth) => {
   const currentIndent = indent(depth);
