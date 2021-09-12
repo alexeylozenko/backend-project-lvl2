@@ -3,16 +3,13 @@ import _ from 'lodash';
 const indent = (depth, quantity = 4) => ' '.repeat(depth * quantity);
 
 const stringify = (data, depth) => {
-  const objectToString = (obj) => {
-    const lines = Object.entries(obj)
-      .map(([key, value]) => `${indent(depth)}${key}: ${stringify(value, depth + 1)}`);
-
-    return ['{', ...lines, `${indent(depth - 1)}}`].join('\n');
-  };
-  if (_.isPlainObject(data)) {
-    return `${objectToString(data, depth)}`;
+  if (!_.isPlainObject(data)) {
+    return String(data);
   }
-  return String(data);
+  const lines = Object.entries(data)
+    .map(([key, value]) => `${indent(depth)}${key}: ${stringify(value, depth + 1)}`);
+
+  return ['{', ...lines, `${indent(depth - 1)}}`].join('\n');
 };
 
 const formatStylish = (diffTree) => {
